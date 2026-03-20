@@ -1,5 +1,5 @@
-const express = require("express");
-const productController = require("../controllers/productController");
+import express from "express";
+import productController from "./productController.test.js";
 
 const app = express();
 app.use(express.json());
@@ -11,4 +11,4 @@ app.post("/products", productController.createProductDashboard);
 app.put("/products/:productId", productController.updateProductDashboard);
 app.delete("/products/:productId", productController.deleteProductDashboard);
 
-module.exports = app;
+export default app;

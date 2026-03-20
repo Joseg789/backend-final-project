@@ -1,11 +1,10 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const productApiController = require("./api.controller");
-const authController = require("../controllers/authController");
+import productApiController from "./api.controller.js";
+import authController from "../controllers/authController.js";
 
-const auth = require("../middlewares/authMiddleware");
-const upload = require("../middlewares/uploadCloudinaryMiddleware");
+import upload from "../middlewares/uploadCloudinaryMiddleware.js";
 
 // GET /api/products
 router.get("/", (req, res) => {
@@ -54,10 +53,10 @@ router.get("/products", productApiController.getAllProducts);
  */
 router.get("/products/:id", productApiController.getProductById);
 
-router.get(
-  "/products/category/:categoria",
-  productApiController.getProductsByCategory,
-);
+// router.get(
+//   "/products/category/:categoria",
+//   productApiController.getProductsByCategory,
+// );
 
 /**
  * @swagger
@@ -94,8 +93,8 @@ router.get(
  */
 router.post(
   "/products",
-  auth,
-  upload.single("image"),
+  // auth,
+  // upload.single("image"),
   productApiController.createProduct,
 );
 
@@ -124,8 +123,8 @@ router.post(
  */
 router.put(
   "/products/:id",
-  auth,
-  upload.single("image"),
+  // auth,
+  // upload.single("image"),
   productApiController.updateProduct,
 );
 
@@ -147,7 +146,7 @@ router.put(
  *       404:
  *         description: No encontrado
  */
-router.delete("/products/:id", auth, productApiController.deleteProduct);
+router.delete("/products/:id", productApiController.deleteProduct);
 
 // POST /api/auth/login
 router.post("/auth/login", authController.login);
@@ -164,4 +163,4 @@ router.post(
     }),
 );
 
-module.exports = router;
+export default router;

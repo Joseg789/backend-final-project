@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const validCategorias = ["Camisetas", "Pantalones", "Zapatos", "Accesorios"]; // enum de categorias
 const validTallas = ["XS", "S", "M", "L", "XL"]; // enum de tallas
@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema({
   },
   imagen: {
     type: String,
-    required: true,
+    default: "",
   },
   categoria: {
     type: String,
@@ -32,6 +32,4 @@ const productSchema = new mongoose.Schema({
     min: 0,
   },
 });
-module.exports = mongoose.model("Product", productSchema);
-module.exports.validTallas = validTallas; // exportado solo si lo necesitas en otros archivos
-module.exports.validCategorias = validCategorias; // exportado solo si lo necesitas en otros archivos
+export default mongoose.model("Product", productSchema);

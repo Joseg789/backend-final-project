@@ -1,5 +1,4 @@
-const User = require("../models/User");
-const Product = require("../models/Product");
+import User from "../models/User.js";
 
 const authController = {
   createUser: async (req, res) => {
@@ -59,4 +58,4 @@ const authController = {
   },
 };
 
-module.exports = authController;
+export default authController;

@@ -1,5 +1,5 @@
-const Product = require("../models/Product");
-const validateErrors = require("../utils/validateErrors");
+import Product from "../models/Product.js";
+import validateErrors from "../utils/validateErrors.js";
 
 const productController = {
   // GET /api/products
@@ -105,18 +105,14 @@ const productController = {
       const { id } = req.params;
       const { nombre, descripcion, categoria, talla, precio } = req.body;
 
-      const updatedProduct = await Product.findByIdAndUpdate(
-        id,
-        {
-          nombre,
-          descripcion,
-          imagen: req.file ? req.file.path : undefined,
-          categoria,
-          talla,
-          precio,
-        },
-        { new: true },
-      );
+      const updatedProduct = await Product.findByIdAndUpdate(id, {
+        nombre,
+        descripcion,
+        imagen: req.file ? req.file.path : undefined,
+        categoria,
+        talla,
+        precio,
+      });
 
       if (!updatedProduct) {
         return res.status(404).json({
@@ -187,4 +183,4 @@ const productController = {
   },
 };
 
-module.exports = productController;
+export default productController;

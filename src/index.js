@@ -1,14 +1,13 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const helmet = require("helmet");
-const cors = require("cors");
-const router = require("./api/api.router");
+import express from "express";
+import dotenv from "dotenv";
+import helmet from "helmet";
+import cors from "cors";
+import router from "./api/api.router.js";
+import dbConnection from "./config/db.js";
 
 dotenv.config();
 
 const app = express();
-
-const { dbConnection } = require("./config/db");
 
 app.use(
   cors({
@@ -39,4 +38,4 @@ app.listen(PORT, () => {
   console.log(`🚀 API running → http://localhost:${PORT}`);
 });
 
-module.exports = app;
+export default app;

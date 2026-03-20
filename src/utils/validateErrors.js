@@ -11,9 +11,9 @@ const validateErrors = (req) => {
   if (!talla || talla.trim() === "") errors.push("La talla es obligatoria.");
   if (!precio || isNaN(precio) || Number(precio) <= 0)
     errors.push("El precio debe ser un número mayor que 0.");
-  if (!req.file) errors.push("Debes subir una imagen del producto.");
+  // if (!req.file) errors.push("Debes subir una imagen del producto.");
 
   return errors;
 };
 
-module.exports = validateErrors;
+export default validateErrors;

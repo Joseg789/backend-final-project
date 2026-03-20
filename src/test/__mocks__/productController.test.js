@@ -1,10 +1,9 @@
-const request = require("supertest");
+import request from "supertest";
+jest.mock("../models/Product.js");
+jest.mock("../utils/validateErrors.js");
 
-jest.mock("../models/Product");
-jest.mock("../utils/validateErrors");
-
-const Product = require("../models/Product");
-const validateErrors = require("../utils/validateErrors");
+import Product from "./Product.js";
+import validateErrors from "../../utils/validateErrors.js";
 const app = require("./app");
 
 describe("Product Controller", () => {

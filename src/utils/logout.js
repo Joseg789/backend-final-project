@@ -1,3 +1,3 @@
 const logout = () => {};
 
-module.exports = logout;
+export default logout;
