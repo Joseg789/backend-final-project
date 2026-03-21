@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const validCategorias = ["Camisetas", "Pantalones", "Zapatos", "Accesorios"]; // enum de categorias
 const validTallas = ["XS", "S", "M", "L", "XL"]; // enum de tallas
 
-const productSchema = new mongoose.Schema({
+const productsSchema = new mongoose.Schema({
   nombre: {
     type: String,
     required: true,
@@ -32,4 +32,4 @@ const productSchema = new mongoose.Schema({
     min: 0,
   },
 });
-export default mongoose.model("Product", productSchema);
+export default mongoose.model("Products", productsSchema);

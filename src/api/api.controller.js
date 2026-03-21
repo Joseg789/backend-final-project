@@ -1,11 +1,11 @@
-import Product from "../models/Product.js";
+import Products from "../models/Products.js";
 import validateErrors from "../utils/validateErrors.js";
 
 const productController = {
   // GET /api/products
   getAllProducts: async (req, res) => {
     try {
-      const products = await Product.find();
+      const products = await Products.find();
 
       if (!products || products.length === 0) {
         return res.status(404).json({
@@ -32,7 +32,7 @@ const productController = {
     try {
       const { id } = req.params;
 
-      const product = await Product.findById(id);
+      const product = await Products.findById(id);
 
       if (!product) {
         return res.status(404).json({
@@ -67,7 +67,7 @@ const productController = {
 
       const { nombre, descripcion, categoria, talla, precio } = req.body;
 
-      const newProduct = await Product.create({
+      const newProduct = await Products.create({
         nombre,
         descripcion,
         imagen: req.file ? req.file.path : undefined,
@@ -105,7 +105,7 @@ const productController = {
       const { id } = req.params;
       const { nombre, descripcion, categoria, talla, precio } = req.body;
 
-      const updatedProduct = await Product.findByIdAndUpdate(id, {
+      const updatedProduct = await Products.findByIdAndUpdate(id, {
         nombre,
         descripcion,
         imagen: req.file ? req.file.path : undefined,
@@ -139,7 +139,7 @@ const productController = {
     try {
       const { id } = req.params;
 
-      const product = await Product.findByIdAndDelete(id);
+      const product = await Products.findByIdAndDelete(id);
 
       if (!product) {
         return res.status(404).json({
@@ -167,7 +167,7 @@ const productController = {
       let { categoria } = req.params;
       categoria = categoria[0].toUpperCase() + categoria.slice(1);
 
-      const products = await Product.find({ categoria });
+      const products = await Products.find({ categoria });
 
       res.json({
         success: true,
