@@ -104,12 +104,13 @@ const productController = {
   updateProduct: async (req, res) => {
     try {
       const { id } = req.params;
-      const { nombre, descripcion, categoria, talla, precio } = req.body;
+      const { nombre, descripcion, categoria, talla, precio, imagen } =
+        req.body;
 
       const updatedProduct = await Products.findByIdAndUpdate(id, {
         nombre,
         descripcion,
-        imagen: req.file ? req.file.path : undefined,
+        imagen: req.file ? req.file.path : imagen,
         categoria,
         talla,
         precio,
