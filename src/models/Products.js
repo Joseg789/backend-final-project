@@ -15,7 +15,7 @@ const productsSchema = new mongoose.Schema({
   },
   imagen: {
     type: String,
-    default: "",
+    default: null,
   },
   categoria: {
     type: String,

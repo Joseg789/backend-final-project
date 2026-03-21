@@ -65,12 +65,13 @@ const productController = {
         });
       }
 
-      const { nombre, descripcion, categoria, talla, precio } = req.body;
+      const { nombre, descripcion, categoria, talla, precio, imagen } =
+        req.body;
 
       const newProduct = await Products.create({
         nombre,
         descripcion,
-        imagen: req.file ? req.file.path : undefined,
+        imagen: req.file ? req.file.path : imagen,
         categoria,
         talla,
         precio,
