@@ -4,10 +4,9 @@ import helmet from "helmet";
 import cors from "cors";
 import router from "./api/api.router.js";
 import dbConnection from "./config/db.js";
-
 dotenv.config();
-
 const app = express();
+dbConnection();
 
 app.use(
   cors({
@@ -15,8 +14,6 @@ app.use(
   }),
 );
 app.use(helmet());
-
-dbConnection();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

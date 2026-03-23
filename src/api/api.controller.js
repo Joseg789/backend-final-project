@@ -56,6 +56,7 @@ const productController = {
 
   // POST /api/products
   createProduct: async (req, res) => {
+    console.log(req.body, req.file);
     try {
       const errors = validateErrors(req);
       if (errors.length > 0) {
@@ -64,7 +65,6 @@ const productController = {
           errors,
         });
       }
-
       const { nombre, descripcion, categoria, talla, precio, imagen } =
         req.body;
 
@@ -82,7 +82,7 @@ const productController = {
         data: newProduct,
       });
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
 
       if (error.name === "ValidationError") {
         const erroresArray = Object.values(error.errors).map((e) => e.message);

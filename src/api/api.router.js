@@ -94,7 +94,7 @@ router.get("/products/:id", productApiController.getProductById);
 router.post(
   "/products",
   // auth,
-  // upload.single("image"),
+  upload.single("imagen"),
   productApiController.createProduct,
 );
 
