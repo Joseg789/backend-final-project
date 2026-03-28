@@ -65,7 +65,7 @@ const productController = {
           errors,
         });
       }
-      const { nombre, descripcion, categoria, talla, precio, imagen } =
+      const { nombre, descripcion, categoria, talla, precio, imagen, genero } =
         req.body;
 
       const newProduct = await Products.create({
@@ -75,6 +75,7 @@ const productController = {
         categoria,
         talla,
         precio,
+        genero,
       });
 
       res.status(201).json({

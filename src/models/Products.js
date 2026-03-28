@@ -30,5 +30,14 @@ const productsSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
+  genero: {
+    type: String,
+    required: true,
+  },
+  descuento: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
 });
 export default mongoose.model("Products", productsSchema);
