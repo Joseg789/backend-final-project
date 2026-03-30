@@ -56,7 +56,6 @@ const productController = {
 
   // POST /api/products
   createProduct: async (req, res) => {
-    console.log(req.body, req.file);
     try {
       const errors = validateErrors(req);
       if (errors.length > 0) {
@@ -65,6 +64,8 @@ const productController = {
           errors,
         });
       }
+      //**** */?extraigo datos del body
+
       const { nombre, descripcion, categoria, talla, precio, imagen, genero } =
         req.body;
 
