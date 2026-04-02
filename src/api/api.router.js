@@ -162,5 +162,8 @@ router.post(
       return res.json({ success: true, message: "Logout ok" });
     }),
 );
+// get /api/auth/users
+
+router.get("/auth/users", authController.getUsers);
 
 export default router;

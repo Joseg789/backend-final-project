@@ -1,26 +1,20 @@
 import Products from "../models/Products.js";
 import validateErrors from "../utils/validateErrors.js";
+import mongoose from "mongoose";
 
 const productController = {
   // GET /api/products
   getAllProducts: async (req, res) => {
     try {
-      const products = await Products.find();
+      const products = await Products.find().lean();
 
-      if (!products || products.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Products not found",
-        });
-      }
-
-      res.json({
+      return res.status(200).json({
         success: true,
         data: products,
       });
     } catch (error) {
-      console.error(error.message);
-      res.status(500).json({
+      console.error(error);
+      return res.status(500).json({
         success: false,
         message: "Server error",
       });
@@ -32,7 +26,15 @@ const productController = {
     try {
       const { id } = req.params;
 
-      const product = await Products.findById(id);
+      // ✅ Validar ObjectId
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid product ID",
+        });
+      }
+
+      const product = await Products.findById(id).lean();
 
       if (!product) {
         return res.status(404).json({
@@ -41,13 +43,13 @@ const productController = {
         });
       }
 
-      res.json({
+      return res.status(200).json({
         success: true,
         data: product,
       });
     } catch (error) {
-      console.error(error.message);
-      res.status(500).json({
+      console.error(error);
+      return res.status(500).json({
         success: false,
         message: "Server error",
       });
@@ -64,22 +66,21 @@ const productController = {
           errors,
         });
       }
-      //**** */?extraigo datos del body
 
-      const { nombre, descripcion, categoria, talla, precio, imagen, genero } =
+      const { nombre, descripcion, categoria, talla, precio, genero, imagen } =
         req.body;
 
       const newProduct = await Products.create({
         nombre,
         descripcion,
-        imagen: req.file ? req.file.path : imagen,
         categoria,
         talla,
         precio,
         genero,
+        imagen: req.file ? req.file.path : imagen,
       });
 
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         data: newProduct,
       });
@@ -95,9 +96,9 @@ const productController = {
         });
       }
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
-        message: "Server error",
+        message: " Server Error",
       });
     }
   },
@@ -106,17 +107,36 @@ const productController = {
   updateProduct: async (req, res) => {
     try {
       const { id } = req.params;
-      const { nombre, descripcion, categoria, talla, precio, imagen } =
-        req.body;
 
-      const updatedProduct = await Products.findByIdAndUpdate(id, {
-        nombre,
-        descripcion,
-        imagen: req.file ? req.file.path : imagen,
-        categoria,
-        talla,
-        precio,
-      });
+      // ✅ Validar ID
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid product ID",
+        });
+      }
+
+      const errors = validateErrors(req);
+      if (errors.length > 0) {
+        return res.status(400).json({
+          success: false,
+          errors,
+        });
+      }
+
+      const updateData = {
+        ...req.body,
+      };
+
+      // ✅ Manejo de imagen opcional
+      if (req.file) {
+        updateData.imagen = req.file.path;
+      }
+
+      const updatedProduct = await Products.findByIdAndUpdate(id, updateData, {
+        new: true,
+        runValidators: true,
+      }).lean();
 
       if (!updatedProduct) {
         return res.status(404).json({
@@ -125,13 +145,13 @@ const productController = {
         });
       }
 
-      res.json({
+      return res.status(200).json({
         success: true,
         data: updatedProduct,
       });
     } catch (error) {
-      console.error(error.message);
-      res.status(500).json({
+      console.error(error);
+      return res.status(500).json({
         success: false,
         message: "Server error",
       });
@@ -143,22 +163,30 @@ const productController = {
     try {
       const { id } = req.params;
 
-      const product = await Products.findByIdAndDelete(id);
+      // ✅ Validar ID
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid product ID",
+        });
+      }
 
-      if (!product) {
+      const deletedProduct = await Products.findByIdAndDelete(id).lean();
+
+      if (!deletedProduct) {
         return res.status(404).json({
           success: false,
           message: "Product not found",
         });
       }
 
-      res.json({
+      return res.status(200).json({
         success: true,
-        message: "Product deleted",
+        message: "Product deleted successfully",
       });
     } catch (error) {
-      console.error(error.message);
-      res.status(500).json({
+      console.error(error);
+      return res.status(500).json({
         success: false,
         message: "Server error",
       });
@@ -169,17 +197,25 @@ const productController = {
   getProductsByCategory: async (req, res) => {
     try {
       let { categoria } = req.params;
-      categoria = categoria[0].toUpperCase() + categoria.slice(1);
 
-      const products = await Products.find({ categoria });
+      if (!categoria) {
+        return res.status(400).json({
+          success: false,
+          message: "Category is required",
+        });
+      }
 
-      res.json({
+      categoria = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+
+      const products = await Products.find({ categoria }).lean();
+
+      return res.status(200).json({
         success: true,
         data: products,
       });
     } catch (error) {
-      console.error(error.message);
-      res.status(500).json({
+      console.error(error);
+      return res.status(500).json({
         success: false,
         message: "Server error",
       });

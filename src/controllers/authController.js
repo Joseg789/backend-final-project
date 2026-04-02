@@ -1,60 +1,82 @@
 import User from "../models/User.js";
+import bcrypt from "bcrypt";
 
 const authController = {
   createUser: async (req, res) => {
     const { email, password } = req.body;
 
     try {
-      const newUser = await User.create({ email, password });
-      if (!newUser) {
-        return res.status(500).send("error creando el usuario");
-      }
-      return res.redirect("/login");
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = await User.create({
+        email,
+        password: hashedPassword,
+      });
+
+      return res.json({
+        success: true,
+        user: {
+          email: newUser.email,
+          id: newUser._id,
+        },
+      });
     } catch (error) {
       console.error(error);
-      return res.status(500).send(error.message);
+      return res.status(500).json({ message: error.message });
     }
   },
-  //post/login
+  getUsers: async (req, res) => {
+    try {
+      const users = await User.find();
+      return res.json(users);
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  },
+
   login: async (req, res) => {
     const { email, password } = req.body;
 
-    //verificar si es admin
-    if (
-      email === process.env.ADMIN_USER &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      req.session.isLogged = true;
-      req.session.isAdmin = true;
-      return; //ver
-    }
-    const user = await User.findOne({ email });
-    if (!user) {
-      req.session.isLogged = false;
-      return res.status(401).send("usuario  o clave incorrecto");
-    }
-    //verificamos password
-    if (user.password !== password) {
-      req.session.isLogged = false;
+    try {
+      // admin
+      if (
+        email === process.env.ADMIN_USER &&
+        password === process.env.ADMIN_PASSWORD
+      ) {
+        return res.json({ success: true, role: "admin" });
+      }
 
-      return res.status(401).send("usuario malo");
-    }
-    //inicia sesion usuario
-    req.session.isLogged = true;
-    req.session.isAdmin = false;
-    req.user = user.email;
+      const user = await User.findOne({ email });
 
-    return; //ver
+      if (!user) {
+        return res.status(401).json({ message: "Credenciales incorrectas" });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        return res.status(401).json({ message: "Credenciales incorrectas" });
+      }
+      // if (password !== user.password) {
+      //   return res.status(401).json({ message: "Credenciales incorrectas" });
+      // }
+
+      return res.json({
+        success: true,
+        user: {
+          email: user.email,
+          id: user._id,
+          role: "user",
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Error en login" });
+    }
   },
 
   logout: (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).send("Error al cerrar sesión");
-      }
-
-      return res.redirect("/login"); //ver
-    });
+    return res.json({ success: true, message: "Logout correcto" });
   },
 };
 
