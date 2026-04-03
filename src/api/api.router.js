@@ -1,10 +1,10 @@
-import express from "express";
-const router = express.Router();
+import { Router } from "express";
 import productApiController from "./api.controller.js";
 import authController from "../controllers/authController.js";
 import upload from "../middlewares/uploadCloudinaryMiddleware.js";
 import { auth, isAdmin } from "../middlewares/authMiddleware.js";
-
+import orderController from "../controllers/orderController.js";
+const router = Router();
 /**
  * @swagger
  * /products:
@@ -162,5 +162,15 @@ router.post("/auth/logout", authController.logout);
 router.get("/auth/users", auth, isAdmin, authController.getUsers);
 //get /api/auth/me
 router.get("/auth/me", authController.me);
+
+//orders
+// usuario logueado
+router.get("/orders/me", auth, orderController.getMyOrders);
+router.post("/orders", auth, orderController.createOrder);
+
+// admin
+router.get("/orders", auth, isAdmin, orderController.getAll);
+router.put("/orders/:id", auth, isAdmin, orderController.updateStatus);
+router.delete("/orders/:id", auth, isAdmin, orderController.deleteOrder);
 
 export default router;

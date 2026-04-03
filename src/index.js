@@ -1,30 +1,34 @@
 import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
 import helmet from "helmet";
 import cors from "cors";
 import session from "express-session";
 import rateLimit from "express-rate-limit";
 import router from "./api/api.router.js";
 import dbConnection from "./config/db.js";
-
-dotenv.config();
+import morgan from "morgan";
+import MongoStore from "connect-mongo";
 
 const app = express();
 
 // Seguridad básica
 
-const allowedOrigins = [
-  "http://localhost:4000",
-  "https://tu-frontend.com",
-  "http://localhost:5173",
-];
+const allowedOrigins = ["https://tu-frontend.com", "http://localhost:5173"];
 app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
   }),
 );
-
+//  limit para seguridad
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, //  en 15 minutos
+    max: 100, //max 100 peticiones
+  }),
+);
+app.use(morgan("dev"));
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -33,20 +37,16 @@ app.use(
 
 app.use(
   session({
-    secret: "mi_secreto",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }), //guardamos la session en mongodb
     cookie: {
-      secure: false, // true solo en HTTPS
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 1000 * 60 * 60 * 24, // 1 día
     },
-  }),
-);
-
-//  limit para seguridad
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000, //  en 15 minutos
-    max: 100, //max 100 peticiones
   }),
 );
 
