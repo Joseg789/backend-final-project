@@ -1,15 +1,9 @@
 import express from "express";
 const router = express.Router();
-
 import productApiController from "./api.controller.js";
 import authController from "../controllers/authController.js";
-
 import upload from "../middlewares/uploadCloudinaryMiddleware.js";
-
-// GET /api/products
-router.get("/", (req, res) => {
-  res.json({ message: "Welcome to the Products API" });
-});
+import { auth, isAdmin } from "../middlewares/authMiddleware.js";
 
 /**
  * @swagger
@@ -28,6 +22,11 @@ router.get("/", (req, res) => {
  *                 $ref: '#/components/schemas/Product'
  */
 router.get("/products", productApiController.getAllProducts);
+
+router.get(
+  "/products/category/:categoria",
+  productApiController.getProductsByCategory,
+);
 
 /**
  * @swagger
@@ -52,11 +51,6 @@ router.get("/products", productApiController.getAllProducts);
  *         description: Producto no encontrado
  */
 router.get("/products/:id", productApiController.getProductById);
-
-// router.get(
-//   "/products/category/:categoria",
-//   productApiController.getProductsByCategory,
-// );
 
 /**
  * @swagger
@@ -93,7 +87,8 @@ router.get("/products/:id", productApiController.getProductById);
  */
 router.post(
   "/products",
-  // auth,
+  auth,
+  isAdmin,
   upload.single("imagen"),
   productApiController.createProduct,
 );
@@ -123,8 +118,9 @@ router.post(
  */
 router.put(
   "/products/:id",
-  // auth,
-  // upload.single("image"),
+  auth,
+  isAdmin,
+  upload.single("imagen"),
   productApiController.updateProduct,
 );
 
@@ -146,7 +142,12 @@ router.put(
  *       404:
  *         description: No encontrado
  */
-router.delete("/products/:id", productApiController.deleteProduct);
+router.delete(
+  "/products/:id",
+  auth,
+  isAdmin,
+  productApiController.deleteProduct,
+);
 
 // POST /api/auth/login
 router.post("/auth/login", authController.login);
@@ -154,16 +155,12 @@ router.post("/auth/login", authController.login);
 // POST /api/auth/register
 router.post("/auth/register", authController.createUser);
 
-// POST /api/auth/logout (opcional JWT → normalmente frontend borra token)
-router.post(
-  "/auth/logout",
-  authController.logout ??
-    ((req, res) => {
-      return res.json({ success: true, message: "Logout ok" });
-    }),
-);
+// POST /api/auth/logout
+router.post("/auth/logout", authController.logout);
 // get /api/auth/users
 
-router.get("/auth/users", authController.getUsers);
+router.get("/auth/users", auth, isAdmin, authController.getUsers);
+//get /api/auth/me
+router.get("/auth/me", authController.me);
 
 export default router;
