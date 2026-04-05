@@ -36,7 +36,10 @@ const orderController = {
       });
       return res.status(201).json({ success: true, order });
     } catch (error) {
-      return res.status(500).json({ message: "Error al crear la orden" });
+      console.error("Error detallado:", error.message); // ← ver el error real
+      return res
+        .status(500)
+        .json({ message: "Error al crear la orden", detail: error.message });
     }
   },
 

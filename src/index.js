@@ -25,7 +25,7 @@ app.use(
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, //  en 15 minutos
-    max: 100, //max 100 peticiones
+    max: 2000, //max 2000 peticiones
   }),
 );
 app.use(morgan("dev"));
@@ -51,8 +51,8 @@ app.use(
 );
 
 //  Body parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" })); // si envio muchos items en el carrito  le doy mas espacio para que pueda parsearlos
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Rutas
 app.use("/api", router);

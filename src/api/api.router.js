@@ -160,6 +160,9 @@ router.post("/auth/logout", authController.logout);
 // get /api/auth/users
 
 router.get("/auth/users", auth, isAdmin, authController.getUsers);
+router.put("/auth/users/:id", auth, isAdmin, authController.updateUser);
+router.delete("/auth/users/:id", auth, isAdmin, authController.deleteUser);
+
 //get /api/auth/me
 router.get("/auth/me", authController.me);
 
@@ -169,6 +172,8 @@ router.get("/orders/me", auth, orderController.getMyOrders);
 router.post("/orders", auth, orderController.createOrder);
 
 // admin
+//orders
+
 router.get("/orders", auth, isAdmin, orderController.getAll);
 router.put("/orders/:id", auth, isAdmin, orderController.updateStatus);
 router.delete("/orders/:id", auth, isAdmin, orderController.deleteOrder);

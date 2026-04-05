@@ -40,6 +40,39 @@ const authController = {
       return res.status(500).json({ message: "Error al obtener usuarios" });
     }
   },
+  updateUser: async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const updates = {};
+      if (email) updates.email = email;
+      if (password) updates.password = await bcrypt.hash(password, 10);
+
+      const user = await User.findByIdAndUpdate(req.params.id, updates, {
+        returnDocument: "after",
+      }).select("-password");
+
+      if (!user)
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.json({ success: true, user });
+    } catch (error) {
+      if (error.code === 11000) {
+        return res.status(400).json({ message: "El email ya está registrado" });
+      }
+      return res.status(500).json({ message: "Error al actualizar usuario" });
+    }
+  },
+
+  deleteUser: async (req, res) => {
+    try {
+      const user = await User.findByIdAndDelete(req.params.id);
+      if (!user)
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.json({ success: true });
+    } catch {
+      return res.status(500).json({ message: "Error al eliminar usuario" });
+    }
+  },
+  //login
   login: async (req, res) => {
     const { email, password } = req.body;
 
@@ -60,7 +93,7 @@ const authController = {
         req.session.user = { email, role: "admin" };
         return res.json({ success: true, role: "admin" });
       }
-
+      //usuario
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(401).json({ message: "Credenciales incorrectas" });
