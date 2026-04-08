@@ -21,25 +21,34 @@ const orderController = {
     }
   },
 
-  // crear orden — se llama al hacer checkout
+  // crear orden la llamo al hacer checkout
+
   createOrder: async (req, res) => {
     const { items, total, direccion } = req.body;
     if (!items?.length)
       return res.status(400).json({ message: "El carrito está vacío" });
-
     try {
       const order = await Order.create({
-        user: req.session.user.id,
+        user: req.user.id, //  antes era req.session.user.id
         items,
         total,
         direccion,
       });
       return res.status(201).json({ success: true, order });
     } catch (error) {
-      console.error("Error detallado:", error.message); // ← ver el error real
       return res
         .status(500)
         .json({ message: "Error al crear la orden", detail: error.message });
+    }
+  },
+
+  // mis órdenes
+  getMyOrders: async (req, res) => {
+    try {
+      const orders = await Order.find({ user: req.user.id }); //  mismo cambio
+      return res.json(orders);
+    } catch {
+      return res.status(500).json({ message: "Error al obtener tus órdenes" });
     }
   },
 

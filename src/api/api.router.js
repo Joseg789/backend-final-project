@@ -4,6 +4,7 @@ import authController from "../controllers/authController.js";
 import upload from "../middlewares/uploadCloudinaryMiddleware.js";
 import { auth, isAdmin } from "../middlewares/authMiddleware.js";
 import orderController from "../controllers/orderController.js";
+import contactController from "../controllers/contactController.js";
 const router = Router();
 /**
  * @swagger
@@ -93,6 +94,7 @@ router.post(
   productApiController.createProduct,
 );
 
+router.post("/contact", contactController.sendMessage);
 /**
  * @swagger
  * /products/{productId}:

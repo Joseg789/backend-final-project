@@ -108,7 +108,7 @@ const productController = {
     try {
       const { id } = req.params;
 
-      // ✅ Validar ID
+      // Validar ID
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({
           success: false,
@@ -128,7 +128,7 @@ const productController = {
         ...req.body,
       };
 
-      // ✅ Manejo de imagen opcional
+      // Manejo de imagen opcional
       if (req.file) {
         updateData.imagen = req.file.path;
       }
@@ -163,7 +163,7 @@ const productController = {
     try {
       const { id } = req.params;
 
-      // ✅ Validar ID
+      //  Validar ID
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({
           success: false,
