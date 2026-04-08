@@ -12,7 +12,10 @@ const app = express();
 
 // Seguridad básica
 
-const allowedOrigins = ["https://tu-frontend.com", "http://localhost:5173"];
+const allowedOrigins = [
+  "https://myshp26jgsm.netlify.app",
+  "http://localhost:5173",
+];
 app.use(
   cors({
     origin: allowedOrigins,
