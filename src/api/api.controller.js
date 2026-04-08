@@ -26,7 +26,7 @@ const productController = {
     try {
       const { id } = req.params;
 
-      // ✅ Validar ObjectId
+      //  Validar ObjectId
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({
           success: false,

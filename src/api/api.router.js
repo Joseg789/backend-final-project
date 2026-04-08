@@ -5,6 +5,8 @@ import upload from "../middlewares/uploadCloudinaryMiddleware.js";
 import { auth, isAdmin } from "../middlewares/authMiddleware.js";
 import orderController from "../controllers/orderController.js";
 import contactController from "../controllers/contactController.js";
+import subscriptionController from "../controllers/subscriptionController.js";
+
 const router = Router();
 /**
  * @swagger
@@ -95,6 +97,7 @@ router.post(
 );
 
 router.post("/contact", contactController.sendMessage);
+router.post("/subscribe", subscriptionController.subscribe);
 /**
  * @swagger
  * /products/{productId}:

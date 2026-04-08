@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import { sendWelcomeEmail } from "../services/emailService.js";
 const generateToken = (payload) =>
   jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "24h" });
 
@@ -10,9 +10,16 @@ const authController = {
     const { email, password } = req.body;
     if (!email || !password)
       return res.status(400).json({ message: "Email y contraseña requeridos" });
+
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = await User.create({ email, password: hashedPassword });
+
+      // email de bienvenida — no bloqueamos la respuesta si falla
+      sendWelcomeEmail({ email }).catch((err) =>
+        console.error("Error enviando email de bienvenida:", err),
+      );
+
       return res.json({
         success: true,
         user: { email: newUser.email, id: newUser._id },
