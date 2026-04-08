@@ -165,7 +165,7 @@ router.post("/auth/logout", authController.logout);
 // get /api/auth/users
 
 router.get("/auth/users", auth, isAdmin, authController.getUsers);
-router.put("/auth/users/:id", auth, isAdmin, authController.updateUser);
+router.put("/auth/users/:id", auth, authController.updateUser);
 router.delete("/auth/users/:id", auth, isAdmin, authController.deleteUser);
 
 //get /api/auth/me
